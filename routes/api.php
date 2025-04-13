@@ -6,17 +6,6 @@ use App\Http\Controllers\Api\V1\SubmissionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Di sini Anda bisa mendaftarkan API routes untuk aplikasi Anda. Route
-| ini dimuat oleh RouteServiceProvider dan dikelompokkan ke dalam grup
-| yang menggunakan middleware "api".
-|
-*/
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
