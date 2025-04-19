@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Filters\V1\AccountFilter;
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\StoreAccountRequest;
 use App\Http\Requests\V1\UpdateAccountRequest;
 use App\Http\Resources\V1\AccountCollection;
@@ -13,9 +14,11 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->authorizeResource(Account::class,'account');
+    }
     public function index(Request $request)
     {
         $filter = new AccountFilter();

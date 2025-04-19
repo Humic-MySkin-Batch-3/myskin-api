@@ -8,43 +8,28 @@ use Illuminate\Auth\Access\Response;
 
 class DoctorProfilePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny($user)
     {
-        return false;
+        // hanya dokter & admin yg butuh list profil dokter
+        return in_array($user->role,['doctor','admin']);
     }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, DoctorProfile $doctorProfile): bool
+    public function view($user, DoctorProfile $p)
     {
-        return false;
+        // dokter hanya lihat profil dirinya sendiri
+        return $user->role==='doctor' && $p->user_id === $user->id || $user->role==='admin';
     }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function update($user, DoctorProfile $p)
     {
-        return false;
+        return $user->role==='doctor' && $p->user_id === $user->id || $user->role==='admin';
     }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, DoctorProfile $doctorProfile): bool
+    public function delete($user, DoctorProfile $p)
     {
-        return false;
+        // biasanya nggak dihapus, tapi kalau perlu:
+        return $user->role==='admin';
     }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, DoctorProfile $doctorProfile): bool
+    public function create($user)
     {
+        // profil dokter dibuat otomatis waktu register doctor
         return false;
     }
 

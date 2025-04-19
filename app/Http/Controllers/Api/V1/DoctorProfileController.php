@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Filters\V1\DoctorProfileFilter;
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\StoreDoctorProfileRequest;
 use App\Http\Requests\V1\UpdateDoctorProfileRequest;
 use App\Http\Resources\V1\DoctorProfileCollection;
@@ -12,21 +13,23 @@ use Illuminate\Http\Request;
 
 class DoctorProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function __construct()
     {
-        //
-        $filter = new DoctorProfileFilter();
-        $queryItems = $filter->transform($request); // [column, operator, value]
+        $this->middleware('auth:sanctum');
+        $this->authorizeResource(DoctorProfile::class,'doctorProfile');
+    }
+    public function index(Request $r)
+    {
+        $this->authorize('viewAny', DoctorProfile::class);
 
-        if (count($queryItems) == 0) {
-            return new DoctorProfileCollection(DoctorProfile::paginate());
-        } else {
-            $doctorProfiles = DoctorProfile::where($queryItems)->paginate();
-            return new DoctorProfileCollection($doctorProfiles->appends($request->query()));
+        // kalau dokter, return hanya profil dia sendiri:
+        if ($r->user()->role==='doctor') {
+            $p = DoctorProfile::where('user_id',$r->user()->id)->firstOrFail();
+            return new DoctorProfileCollection(collect([$p]));
         }
+
+        // kalau admin, bisa lihat semua:
+        return new DoctorProfileCollection(DoctorProfile::paginate());
     }
 
     /**

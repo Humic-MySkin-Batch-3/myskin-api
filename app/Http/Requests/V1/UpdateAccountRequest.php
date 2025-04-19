@@ -29,7 +29,7 @@ class UpdateAccountRequest extends FormRequest
                 'email' => ['required', 'email'],
                 'phone' => ['required'],
                 'dob' => ['required'],
-                'role' => ['required', Rule::in(['patient', 'doctor'])],
+                'role' => ['required', Rule::in(['patient', 'doctor', 'admin'])],
                 'password' => ['required'],
             ];
         } else {
@@ -38,7 +38,7 @@ class UpdateAccountRequest extends FormRequest
                 'email' => ['sometimes', 'required', 'email'],
                 'phone' => ['sometimes', 'required'],
                 'dob' => ['sometimes', 'required'],
-                'role' => ['sometimes', 'required', Rule::in(['patient', 'doctor'])],
+                'role' => ['sometimes', 'required', Rule::in(['patient', 'doctor', 'admin'])],
                 'password' => ['sometimes', 'required'],
             ];
         }

@@ -8,45 +8,32 @@ use Illuminate\Auth\Access\Response;
 
 class AccountPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny($user)
     {
+        // hanya admin boleh lihat daftar akun
+        return $user->role === 'admin';
+    }
+    public function view($user, Account $account)
+    {
+        // admin boleh lihat semua, user bisa lihat diri sendiri
+        return $user->role==='admin' || $user->id === $account->id;
+    }
+    public function update($user, Account $account)
+    {
+        // admin boleh update semua, user bisa update diri sendiri
+        return $user->role==='admin' || $user->id === $account->id;
+    }
+    public function delete($user, Account $account)
+    {
+        // hanya admin
+        return $user->role==='admin';
+    }
+    public function create($user)
+    {
+        // pembuatan akun via API hanya lewat register
         return false;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Account $account): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Account $account): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Account $account): bool
-    {
-        return false;
-    }
 
     /**
      * Determine whether the user can restore the model.

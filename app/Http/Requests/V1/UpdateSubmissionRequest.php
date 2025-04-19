@@ -27,7 +27,7 @@ class UpdateSubmissionRequest extends FormRequest
             return [
                 'patientId' => ['required'],
                 'doctorId' => ['required'],
-                'imagePath' => ['required'],
+                'image'      => ['sometimes','image','max:2048'],
                 'complaint' => ['required'],
                 'status' => ['required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['required'],
@@ -39,7 +39,7 @@ class UpdateSubmissionRequest extends FormRequest
             return [
                 'patientId' => ['sometimes', 'required'],
                 'doctorId' => ['sometimes', 'required'],
-                'imagePath' => ['sometimes', 'required'],
+                'image'      => ['sometimes','image','max:2048'],
                 'complaint' => ['sometimes', 'required'],
                 'status' => ['sometimes', 'required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['sometimes', 'required'],
@@ -50,17 +50,17 @@ class UpdateSubmissionRequest extends FormRequest
         }
     }
 
-    protected function prepareForValidation()
+    /*protected function prepareForValidation()
     {
         $data = $this->all();
         $data['patient_id'] = $data['patientId'] ?? $data['patient_id'] ?? null;
         $data['doctor_id'] = $data['doctorId'] ?? $data['doctor_id'] ?? null;
         $data['image_path'] = $data['imagePath'] ?? $data['image_path'] ?? null;
-        $data['doctor_note'] = $data['doctorNote'] ?? $data['doctor_note'] ?? null;
+        $data['complaint'] = $data['complaint'] ?? $data['complaint'] ?? null;
         $data['submitted_at'] = $data['submittedAt'] ?? $data['submitted_at'] ?? null;
         $data['verified_at'] = $data['verifiedAt'] ?? $data['verified_at'] ?? null;
 
         $this->merge($data);
-    }
+    }*/
 
 }

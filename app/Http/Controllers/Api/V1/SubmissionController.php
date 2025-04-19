@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Filters\V1\SubmissionFilter;
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\StoreSubmissionRequest;
 use App\Http\Requests\V1\UpdateSubmissionRequest;
 use App\Http\Resources\V1\SubmissionCollection;
@@ -13,22 +14,36 @@ use Illuminate\Http\Request;
 
 class SubmissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+        $this->authorizeResource(Submission::class,'submission');
+    }
+
     public function index(Request $request)
     {
-        //
-        $filter = new SubmissionFilter();
-        $queryItems = $filter->transform($request); // [column, operator, value]
+        $this->authorize('viewAny', Submission::class);
 
-        if (count($queryItems) == 0) {
-            return new SubmissionCollection(Submission::paginate());
-        } else {
-            $submissions = Submission::where($queryItems)->paginate();
-            return new SubmissionCollection($submissions->appends($request->query()));
-        }
+        $query = Submission::query()
+            ->when(
+                $request->user()->role === 'patient',
+                fn($q) => $q->where('patient_id', $request->user()->id)
+            );
+
+        $statusCounts = (clone $query)
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $subs = $query
+            ->paginate()
+            ->appends($request->query());
+
+        return (new SubmissionCollection($subs))
+            ->additional(['statusCounts' => $statusCounts]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -43,7 +58,17 @@ class SubmissionController extends Controller
      */
     public function store(StoreSubmissionRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $data['image_path'] = $request
+            ->file('image')
+            ->store('submissions', 'public');
+
+        $submission = Submission::create($data);
+
+        return (new SubmissionResource($submission))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -68,8 +93,15 @@ class SubmissionController extends Controller
      */
     public function update(UpdateSubmissionRequest $request, Submission $submission)
     {
-        //
-        $submission->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            // hapus file lama kalau perlu...
+            $data['image_path'] = $request->file('image')->store('submissions', 'public');
+        }
+
+        $submission->update($data);
+
         return new SubmissionResource($submission->fresh());
     }
 

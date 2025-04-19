@@ -8,45 +8,35 @@ use Illuminate\Auth\Access\Response;
 
 class SubmissionPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny($user)
     {
+        // pasien & dokter boleh lihat submission…
+        return in_array($user->role, ['patient','doctor', 'admin']);
+    }
+    public function view($user, Submission $s)
+    {
+        if($user->role==='patient'){
+            return $s->patient_id === $user->id;
+        }
+        if($user->role==='doctor' || $user->role==='admin'){
+            // dokter lihat semua (atau tambahkan filter assigned/idempot)
+            return true;
+        }
         return false;
+    }
+    public function create($user)
+    {
+        return $user->role==='patient' || $user->role==='admin';
+    }
+    public function update($user, Submission $s)
+    {
+        return $user->role==='doctor' || $user->role==='admin';
+    }
+    public function delete($user, Submission $s)
+    {
+        return $user->role==='doctor' || $user->role==='admin';
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Submission $submission): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Submission $submission): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Submission $submission): bool
-    {
-        return false;
-    }
 
     /**
      * Determine whether the user can restore the model.

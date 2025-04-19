@@ -5,7 +5,7 @@ namespace App\Http\Requests\V1;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreAccountRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,12 @@ class StoreAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'email' => ['required', 'email'],
-            'phone' => ['required'],
-            'dob' => ['required'],
-            'role' => ['required', Rule::in(['patient', 'doctor', 'admin'])],
-            'password' => ['required'],
+            'name'     => ['required','string'],
+            'email'    => ['required','email','unique:accounts,email'],
+            'phone'    => ['required','string','unique:accounts,phone'],
+            'dob'      => ['required','date'],
+            'password' => ['required','min:6','confirmed'],
+            'role'     => ['required', Rule::in(['patient','doctor'])],
         ];
     }
 }
