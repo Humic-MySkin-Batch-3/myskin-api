@@ -25,8 +25,8 @@ class StoreSubmissionRequest extends FormRequest
             'status'     => ['sometimes', Rule::in(['pending','verified','rejected'])],
             'diagnosis'  => ['sometimes','string'],
             'doctor_note'=> ['sometimes','string'],
-            'submitted_at' => ['sometimes','date'],
-            'verified_at'  => ['sometimes','date'],
+//            'submitted_at' => ['sometimes','date'],
+//            'verified_at'  => ['sometimes','date'],
         ];
     }
 }

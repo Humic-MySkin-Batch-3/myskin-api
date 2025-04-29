@@ -17,6 +17,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
         return $req->user();
     });
 
+    Route::get('submissions/pending', [SubmissionController::class, 'pending']);
+    Route::get('submissions/history', [SubmissionController::class, 'history']);
+
     // resources
     Route::apiResource('accounts', AccountController::class);
     Route::apiResource('submissions', SubmissionController::class);

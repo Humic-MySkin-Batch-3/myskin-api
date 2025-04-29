@@ -9,7 +9,9 @@ use App\Http\Requests\V1\UpdateSubmissionRequest;
 use App\Http\Resources\V1\SubmissionCollection;
 use App\Http\Resources\V1\SubmissionResource;
 use App\Models\Submission;
+use App\Services\SkinAiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 
 class SubmissionController extends Controller
@@ -20,15 +22,44 @@ class SubmissionController extends Controller
         $this->authorizeResource(Submission::class,'submission');
     }
 
+    public function pending(Request $request)
+    {
+        $this->authorize('viewAny', Submission::class);
+
+        $query = Submission::with('patient')
+            ->where('status', 'pending');
+
+        $subs = $query->paginate()
+            ->appends($request->query());
+
+        return new SubmissionCollection($subs);
+    }
+
+    public function history(Request $request)
+    {
+        $this->authorize('viewAny', Submission::class);
+
+        $query = Submission::with('patient')
+            ->where('status', '!=', 'pending');
+
+        $subs = $query->paginate()
+            ->appends($request->query());
+
+        return new SubmissionCollection($subs);
+    }
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', Submission::class);
 
-        $query = Submission::query()
-            ->when(
-                $request->user()->role === 'patient',
-                fn($q) => $q->where('patient_id', $request->user()->id)
-            );
+        $filter = new SubmissionFilter();
+        $filterItems = $filter->transform($request);
+
+        $query = Submission::where($filterItems);
+
+        if ($request->user()->role === 'patient') {
+            $query->where('patient_id', $request->user()->id);
+        }
 
         $statusCounts = (clone $query)
             ->selectRaw('status, count(*) as total')
@@ -43,6 +74,7 @@ class SubmissionController extends Controller
         return (new SubmissionCollection($subs))
             ->additional(['statusCounts' => $statusCounts]);
     }
+
 
 
     /**
@@ -60,9 +92,13 @@ class SubmissionController extends Controller
     {
         $data = $request->validated();
 
-        $data['image_path'] = $request
-            ->file('image')
-            ->store('submissions', 'public');
+        $path = $request->file('image')->store('submissions', 'public');
+        $data['image_path'] = $path;
+
+        $data['submitted_at'] = Carbon::now();
+
+        $percentage = SkinAiService::predict($request->file('image'));
+        $data['percentage'] = $percentage;
 
         $submission = Submission::create($data);
 
@@ -98,6 +134,13 @@ class SubmissionController extends Controller
         if ($request->hasFile('image')) {
             // hapus file lama kalau perlu...
             $data['image_path'] = $request->file('image')->store('submissions', 'public');
+        }
+
+        if (isset($data['status'])
+            && $data['status'] === 'verified'
+            && $submission->status !== 'verified'
+        ) {
+            $data['verified_at'] = Carbon::now();
         }
 
         $submission->update($data);

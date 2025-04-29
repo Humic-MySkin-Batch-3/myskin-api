@@ -32,8 +32,8 @@ class UpdateSubmissionRequest extends FormRequest
                 'status' => ['required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['required'],
                 'doctorNote' => ['required'],
-                'submittedAt' => ['required'],
-                'verifiedAt' => ['required'],
+//                'submittedAt' => ['required'],
+//                'verifiedAt' => ['required'],
             ];
         } else {
             return [
@@ -44,8 +44,8 @@ class UpdateSubmissionRequest extends FormRequest
                 'status' => ['sometimes', 'required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['sometimes', 'required'],
                 'doctorNote' => ['sometimes', 'required'],
-                'submittedAt' => ['sometimes', 'required'],
-                'verifiedAt' => ['sometimes', 'required'],
+//                'submittedAt' => ['sometimes', 'required'],
+//                'verifiedAt' => ['sometimes', 'required'],
             ];
         }
     }

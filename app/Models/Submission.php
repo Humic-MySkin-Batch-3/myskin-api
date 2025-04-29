@@ -20,7 +20,8 @@ class Submission extends Model
         'diagnosis',
         'doctor_note',
         'submitted_at',
-        'verified_at'
+        'verified_at',
+        'percentage',
     ];
 
     public function patient()

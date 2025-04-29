@@ -15,17 +15,30 @@ class SubmissionResource extends JsonResource
      */
     public function toArray(Request $request)
     {
+        $threshold     = config('ai.threshold');
+        $labelPos      = config('ai.label_positive');
+        $labelNeg      = config('ai.label_negative');
+
+        $pct = $this->percentage;
+        $diagnosisAi = is_numeric($pct)
+            ? ($pct >= $threshold ? $labelPos : $labelNeg)
+            : null;
+
         return [
             'id' => $this->id,
             'patientId' => $this->patient_id,
+            'patientName' =>$this->patient->name,
             'doctorId' => $this->doctor_id,
             'imageUrl'     => Storage::disk('public')->url($this->image_path),
             'complaint' => $this->complaint,
             'status' => $this->status,
             'diagnosis' => $this->diagnosis,
             'doctorNote' => $this->doctor_note,
-            'submittedAt' => $this->submitted_at,
-            'verifiedAt' => $this->verified_at,
+            'submittedAt'  => optional($this->submitted_at)->format('Y-m-d'),
+            'verifiedAt'   => optional($this->verified_at)->format('Y-m-d'),
+            'percentage'   => $this->percentage,
+            'diagnosisAi' => $diagnosisAi,
         ];
+
     }
 }
