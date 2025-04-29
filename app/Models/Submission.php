@@ -24,6 +24,10 @@ class Submission extends Model
         'percentage',
     ];
 
+    public function scopePending($q) { return $q->where('status','pending'); }
+    public function scopeHistory($q) { return $q->where('status','!=','pending'); }
+
+
     public function patient()
     {
         return $this->belongsTo(Account::class, 'patient_id');

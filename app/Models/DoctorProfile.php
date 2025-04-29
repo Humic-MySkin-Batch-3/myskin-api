@@ -18,9 +18,9 @@ class DoctorProfile extends Model
         'diploma_file_path',
         'certification',
         'current_institution',
-        'years_of_experience',
         'work_history',
-        'publications'
+        'publications',
+        'practice_address'
     ];
 
     public function account() {

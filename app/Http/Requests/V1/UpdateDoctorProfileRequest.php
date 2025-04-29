@@ -31,7 +31,7 @@ class UpdateDoctorProfileRequest extends FormRequest
                 'diplomaFilePath' => ['required'],
                 'certification' => ['required'],
                 'currentInstitution' => ['required'],
-                'yearsOfExperience' => ['required'],
+                //'yearsOfExperience' => ['required'],
                 'workHistory' => ['required'],
                 'publications' => ['required']
             ];
@@ -44,9 +44,10 @@ class UpdateDoctorProfileRequest extends FormRequest
                 'diplomaFilePath' => ['sometimes', 'required'],
                 'certification' => ['sometimes', 'required'],
                 'currentInstitution' => ['sometimes', 'required'],
-                'yearsOfExperience' => ['sometimes', 'required'],
+                //'yearsOfExperience' => ['sometimes', 'required'],
                 'workHistory' => ['sometimes', 'required'],
-                'publications' => ['sometimes', 'required']
+                'publications' => ['sometimes', 'required'],
+                'practice_address' => ['sometimes', 'required'],
             ];
         }
     }
@@ -59,7 +60,7 @@ class UpdateDoctorProfileRequest extends FormRequest
         $data['license_file_path'] = $data['licenseFilePath'] ?? $data['license_file_path'] ??  null;
         $data['diploma_file_path'] = $data['diplomaFilePath'] ?? $data['diploma_file_path'] ??  null;
         $data['current_institution'] = $data['currentInstitution'] ?? $data['current_institution'] ??  null;
-        $data['years_of_experience'] = $data['yearsOfExperience'] ?? $data['years_of_experience'] ??  null;
+        //$data['years_of_experience'] = $data['yearsOfExperience'] ?? $data['years_of_experience'] ??  null;
         $data['work_history'] = $data['workHistory'] ?? $data['work_history'] ??  null;
 
         $this->merge($data);

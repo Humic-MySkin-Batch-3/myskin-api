@@ -28,7 +28,7 @@ class RegisterRequest extends FormRequest
             'phone'    => ['required','string','unique:accounts,phone'],
             'dob'      => ['required','date'],
             'password' => ['required','min:6','confirmed'],
-            'role'     => ['required', Rule::in(['patient','doctor'])],
+            //'role'     => ['required', Rule::in(['patient','doctor'])],
         ];
     }
 }

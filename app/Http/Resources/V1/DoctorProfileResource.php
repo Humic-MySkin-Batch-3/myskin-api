@@ -22,7 +22,7 @@ class DoctorProfileResource extends JsonResource
             'diplomaFilePath' =>$this->diploma_file_path,
             'certification' =>$this->certification,
             'currentInstitution' =>$this->current_institution,
-            'yearsOfExperience' =>$this->years_of_experience,
+            //'yearsOfExperience' =>$this->years_of_experience,
             'workHistory' =>$this->work_history,
             'publications' =>$this->publications
         ];

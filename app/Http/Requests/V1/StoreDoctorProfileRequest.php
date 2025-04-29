@@ -29,9 +29,10 @@ class StoreDoctorProfileRequest extends FormRequest
             'diploma_file_path' => ['required'],
             'certification' => ['required'],
             'current_institution' => ['required'],
-            'years_of_experience' => ['required'],
+            //'years_of_experience' => ['required'],
             'work_history' => ['required'],
-            'publications' => ['required']
+            'publications' => ['required'],
+            'practice_address' => ['required'],
         ];
     }
 
@@ -44,7 +45,7 @@ class StoreDoctorProfileRequest extends FormRequest
             $obj['license_file_path'] = $obj['licenseFilePath'] ??  null;
             $obj['diploma_file_path'] = $obj['diplomaFilePath'] ??  null;
             $obj['current_institution'] = $obj['currentInstitution'] ??  null;
-            $obj['years_of_experience'] = $obj['yearsOfExperience'] ??  null;
+            //$obj['years_of_experience'] = $obj['yearsOfExperience'] ??  null;
             $obj['work_history'] = $obj['workHistory'] ??  null;
             $data[] = $obj;
         }

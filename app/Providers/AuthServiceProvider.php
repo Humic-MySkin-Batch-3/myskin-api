@@ -9,6 +9,7 @@ use App\Policies\AccountPolicy;
 use App\Policies\SubmissionPolicy;
 use App\Policies\DoctorProfilePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::define('access-doctor-section', fn($user)=> $user->role==='doctor' || $user->role==='admin');
         $this->registerPolicies();
     }
 }
