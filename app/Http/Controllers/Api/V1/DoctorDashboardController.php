@@ -28,6 +28,7 @@ class DoctorDashboardController extends Controller
             ->limit(10)
             ->get();
 
+        //$request->merge(['only_percentage' => true]);
         return SubmissionListResource::collection($subs);
     }
 }

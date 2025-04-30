@@ -1,32 +1,22 @@
 <?php
 namespace App\Http\Resources\V1;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-class SubmissionDetailResource extends JsonResource
+class PatientDetectionDetailResource extends JsonResource
 {
-    public function toArray(Request $request)
+    public function toArray($request)
     {
         return [
             'id'           => $this->id,
-            'patientName'  => $this->patient->name,
-            'patientPhone' => $this->patient->phone,
-            'patientEmail' => $this->patient->email,
-            'patientDob'   => $this->patient->dob,
-            'imageUrl'      => Storage::disk('public')->url($this->image_path),
-            'complaint'    => $this->complaint,
-            'status'       => $this->status,
-            'percentage'   => $this->percentage,
+            'imageUrl'     => Storage::disk('public')->url($this->image_path),
             'diagnosis'    => $this->diagnosis ?? 'Belum dapat dipastikan',
             'diagnosisAi'  => $this->getDiagnosisAi(),
-            'doctorNote'   => $this->doctor_note,
-            'submittedAt'  => $this->submitted_at,
-            'verifiedAt'   => $this->verified_at,
+            'isSubmitted'  => $this->status === 'verified' ? 'Sudah' : 'Tidak',
+            'status'       => $this->status,
         ];
     }
-
     private function getDiagnosisAi(): ?string
     {
         $pct       = $this->percentage;

@@ -32,7 +32,7 @@ class SubmissionResource extends JsonResource
             'imageUrl'     => Storage::disk('public')->url($this->image_path),
             'complaint' => $this->complaint,
             'status' => $this->status,
-            'diagnosis' => $this->diagnosis,
+            'diagnosis' => $this->diagnosis ?? 'Belum dapat dipastikan',
             'doctorNote' => $this->doctor_note,
             'submittedAt'  => optional($this->submitted_at)->format('Y-m-d'),
             'verifiedAt'   => optional($this->verified_at)->format('Y-m-d'),

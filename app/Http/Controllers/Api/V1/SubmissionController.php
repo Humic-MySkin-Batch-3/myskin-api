@@ -6,12 +6,18 @@ use App\Filters\V1\SubmissionFilter;
 use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\V1\StoreSubmissionRequest;
 use App\Http\Requests\V1\UpdateSubmissionRequest;
+use App\Http\Resources\V1\PatientDetectionDetailResource;
+use App\Http\Resources\V1\PatientDetectionHistoryResource;
+use App\Http\Resources\V1\PatientSubmissionDetailResource;
+use App\Http\Resources\V1\PatientSubmissionHistoryResource;
 use App\Http\Resources\V1\SubmissionCollection;
+use App\Http\Resources\V1\SubmissionListResource;
 use App\Http\Resources\V1\SubmissionResource;
 use App\Models\Submission;
 use App\Services\SkinAiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 
 class SubmissionController extends Controller
@@ -75,6 +81,43 @@ class SubmissionController extends Controller
             ->additional(['statusCounts' => $statusCounts]);
     }
 
+    public function detectionHistory(Request $r)
+    {
+        $user = $r->user();
+        $subs  = Submission::where('patient_id',$user->id)
+            ->orderBy('submitted_at','desc')->get();
+
+        return PatientDetectionHistoryResource::collection($subs);
+    }
+
+    public function submissionHistory(Request $r)
+    {
+        $user = $r->user();
+        $subs  = Submission::where('patient_id',$user->id)
+            ->where('status','!=','pending')
+            ->orderBy('verified_at','desc')->get();
+
+        return PatientSubmissionHistoryResource::collection($subs);
+    }
+
+    public function detectionDetail($id)
+    {
+        // 'id' di sini adalah primary key (kolom 'id') pada tabel submissions
+        $submission = Submission::findOrFail($id);
+
+        $this->authorize('view', $submission);
+
+        return new PatientDetectionDetailResource($submission);
+    }
+
+    public function submissionDetail($id)
+    {
+        $submission = Submission::findOrFail($id);
+
+        $this->authorize('view', $submission);
+
+        return new PatientSubmissionDetailResource($submission);
+    }
 
 
     /**
@@ -129,22 +172,36 @@ class SubmissionController extends Controller
      */
     public function update(UpdateSubmissionRequest $request, Submission $submission)
     {
-        $data = $request->validated();
+        // 1) Debug input yang diterima
+        Log::debug('SubmissionController@update – incoming payload', $request->only([
+            'doctorId', 'status', 'diagnosis', 'doctorNote'
+        ]));
 
-        if ($request->hasFile('image')) {
-            // hapus file lama kalau perlu...
-            $data['image_path'] = $request->file('image')->store('submissions', 'public');
+        // 2) Mapping manual 👉 snake_case
+        if ($request->filled('doctorId')) {
+            $submission->doctor_id = $request->input('doctorId');
+        }
+        if ($request->filled('status')) {
+            $submission->status = $request->input('status');
+            // otomatis set verified_at kalau status jadi 'verified'
+            if ($request->input('status') === 'verified') {
+                $submission->verified_at = now();
+            }
+        }
+        if ($request->filled('diagnosis')) {
+            $submission->diagnosis = $request->input('diagnosis');
+        }
+        if ($request->filled('doctorNote')) {
+            $submission->doctor_note = $request->input('doctorNote');
         }
 
-        if (isset($data['status'])
-            && $data['status'] === 'verified'
-            && $submission->status !== 'verified'
-        ) {
-            $data['verified_at'] = Carbon::now();
-        }
+        // 3) Simpan perubahan
+        $submission->save();
 
-        $submission->update($data);
+        // 4) Debug hasil after-save
+        Log::debug('SubmissionController@update – updated record', $submission->toArray());
 
+        // 5) Kembalikan resource
         return new SubmissionResource($submission->fresh());
     }
 

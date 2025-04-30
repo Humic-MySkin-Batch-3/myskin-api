@@ -25,30 +25,33 @@ class UpdateSubmissionRequest extends FormRequest
         $method = $this->method();
         if ($method == 'PUT') {
             return [
-                'patientId' => ['required'],
                 'doctorId' => ['required'],
-                'image'      => ['sometimes','image','max:2048'],
-                'complaint' => ['required'],
                 'status' => ['required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['required'],
                 'doctorNote' => ['required'],
-//                'submittedAt' => ['required'],
-//                'verifiedAt' => ['required'],
             ];
         } else {
             return [
-                'patientId' => ['sometimes', 'required'],
-                'doctorId' => ['sometimes', 'required'],
-                'image'      => ['sometimes','image','max:2048'],
-                'complaint' => ['sometimes', 'required'],
+                'doctorId' => ['required'],
                 'status' => ['sometimes', 'required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['sometimes', 'required'],
                 'doctorNote' => ['sometimes', 'required'],
-//                'submittedAt' => ['sometimes', 'required'],
-//                'verifiedAt' => ['sometimes', 'required'],
             ];
         }
     }
+
+    protected function prepareForValidation()
+    {
+        $data = $this->all();
+        if (isset($data['doctorId'])) {
+            $data['doctor_id'] = $data['doctorId'];
+        }
+        if (isset($data['doctorNote'])) {
+            $data['doctor_note'] = $data['doctorNote'];
+        }
+        $this->replace($data);
+    }
+
 
     /*protected function prepareForValidation()
     {

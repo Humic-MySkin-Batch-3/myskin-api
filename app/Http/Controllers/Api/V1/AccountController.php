@@ -38,6 +38,22 @@ class AccountController extends Controller
         return new AccountCollection($accounts->paginate()->appends($request->query()));
     }
 
+    public function welcome(Request $request)
+    {
+        $user = $request->user();
+
+        $firstName = explode(' ', trim($user->name))[0] ?? $user->name;
+
+        $role = ucfirst($user->role);
+        $message = "Welcome back, {$firstName}! (You are logged in as {$role})";
+
+        return response()->json([
+            'message'   => $message,
+            'firstName' => $firstName,
+            'role'      => $user->role,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
