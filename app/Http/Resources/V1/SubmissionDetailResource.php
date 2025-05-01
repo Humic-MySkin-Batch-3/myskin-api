@@ -9,6 +9,7 @@ class SubmissionDetailResource extends JsonResource
 {
     public function toArray(Request $request)
     {
+
         return [
             'id'           => $this->id,
             'patientName'  => $this->patient->name,
@@ -22,8 +23,8 @@ class SubmissionDetailResource extends JsonResource
             'diagnosis'    => $this->diagnosis ?? 'Belum dapat dipastikan',
             'diagnosisAi'  => $this->getDiagnosisAi(),
             'doctorNote'   => $this->doctor_note,
-            'submittedAt'  => $this->submitted_at,
-            'verifiedAt'   => $this->verified_at,
+            'submittedAt'  => optional($this->submitted_at)->format('Y-m-d'),
+            'verifiedAt'   => optional($this->verified_at)->format('Y-m-d'),
         ];
     }
 

@@ -11,6 +11,7 @@ class DoctorPatientController extends Controller
     {
         $patients = Account::where('role','patient')
             ->withCount('submission')
+            ->limit(10)
             ->get(['id','name','phone']);
 
         return PatientListResource::collection($patients);

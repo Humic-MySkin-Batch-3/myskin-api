@@ -24,9 +24,13 @@ class Submission extends Model
         'percentage',
     ];
 
+    protected $casts = [
+        'submitted_at' => 'datetime',
+        'verified_at'  => 'datetime',
+    ];
+
     public function scopePending($q) { return $q->where('status','pending'); }
     public function scopeHistory($q) { return $q->where('status','!=','pending'); }
-
 
     public function patient()
     {

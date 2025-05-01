@@ -53,17 +53,4 @@ class UpdateSubmissionRequest extends FormRequest
     }
 
 
-    /*protected function prepareForValidation()
-    {
-        $data = $this->all();
-        $data['patient_id'] = $data['patientId'] ?? $data['patient_id'] ?? null;
-        $data['doctor_id'] = $data['doctorId'] ?? $data['doctor_id'] ?? null;
-        $data['image_path'] = $data['imagePath'] ?? $data['image_path'] ?? null;
-        $data['complaint'] = $data['complaint'] ?? $data['complaint'] ?? null;
-        $data['submitted_at'] = $data['submittedAt'] ?? $data['submitted_at'] ?? null;
-        $data['verified_at'] = $data['verifiedAt'] ?? $data['verified_at'] ?? null;
-
-        $this->merge($data);
-    }*/
-
 }

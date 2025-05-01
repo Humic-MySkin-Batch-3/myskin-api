@@ -172,38 +172,21 @@ class SubmissionController extends Controller
      */
     public function update(UpdateSubmissionRequest $request, Submission $submission)
     {
-        // 1) Debug input yang diterima
-        Log::debug('SubmissionController@update – incoming payload', $request->only([
-            'doctorId', 'status', 'diagnosis', 'doctorNote'
-        ]));
+        $data = $request->validated();
 
-        // 2) Mapping manual 👉 snake_case
-        if ($request->filled('doctorId')) {
-            $submission->doctor_id = $request->input('doctorId');
-        }
-        if ($request->filled('status')) {
-            $submission->status = $request->input('status');
-            // otomatis set verified_at kalau status jadi 'verified'
-            if ($request->input('status') === 'verified') {
-                $submission->verified_at = now();
-            }
-        }
-        if ($request->filled('diagnosis')) {
-            $submission->diagnosis = $request->input('diagnosis');
-        }
-        if ($request->filled('doctorNote')) {
-            $submission->doctor_note = $request->input('doctorNote');
+        if (
+            array_key_exists('status', $data)
+            && $data['status'] === 'verified'
+            && ! $submission->verified_at
+        ) {
+            $data['verified_at'] = now();
         }
 
-        // 3) Simpan perubahan
-        $submission->save();
+        $submission->update($data);
 
-        // 4) Debug hasil after-save
-        Log::debug('SubmissionController@update – updated record', $submission->toArray());
-
-        // 5) Kembalikan resource
-        return new SubmissionResource($submission->fresh());
+        return new SubmissionResource($submission->refresh());
     }
+
 
     /**
      * Remove the specified resource from storage.
