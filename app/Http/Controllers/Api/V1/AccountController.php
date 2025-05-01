@@ -44,10 +44,12 @@ class AccountController extends Controller
 
         $firstName = explode(' ', trim($user->name))[0] ?? $user->name;
 
+        $id = $user->id;
         $role = ucfirst($user->role);
         $message = "Welcome back, {$firstName}! (You are logged in as {$role})";
 
         return response()->json([
+            'accountId' => $id,
             'message'   => $message,
             'firstName' => $firstName,
             'role'      => $user->role,
