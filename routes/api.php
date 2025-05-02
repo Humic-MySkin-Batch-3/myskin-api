@@ -28,9 +28,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
     // pasien
     Route::get('patient/detections',   [SubmissionController::class,'detectionHistory']);
+    Route::post('patient/detections',  [SubmissionController::class,'store']);
     Route::get('patient/submissions',  [SubmissionController::class,'submissionHistory']);
     Route::get('patient/detection/{id}',   [SubmissionController::class,'detectionDetail']);
     Route::get('patient/submission/{id}',  [SubmissionController::class,'submissionDetail']);
+    Route::patch('patient/submission/{submission}',  [SubmissionController::class,'update']);
+    Route::get('patient/doctors', [AccountController::class, 'listDoctors']);
 
     // resources
     Route::apiResource('accounts', AccountController::class);
@@ -51,6 +54,7 @@ Route::middleware(['auth:sanctum','can:access-doctor-section'])
         Route::get('submissions/pending',[DoctorSubmissionController::class,'pending']);
         Route::get('submissions/history',[DoctorSubmissionController::class,'history']);
         Route::get('submissions/{id}/detail',[DoctorSubmissionController::class,'detail']);
-    });
+        Route::patch('submissions/{submission}',[DoctorSubmissionController::class,'update']);
+});
 
 

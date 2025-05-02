@@ -10,6 +10,7 @@ class DoctorHistorySubmissionResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'patientId' => $this->patient->id,
             'submittedAt'  => optional($this->submitted_at)->format('Y-m-d'),
             'patientName'  => $this->patient->name,

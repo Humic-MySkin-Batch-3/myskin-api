@@ -8,6 +8,7 @@ use App\Http\Requests\V1\StoreAccountRequest;
 use App\Http\Requests\V1\UpdateAccountRequest;
 use App\Http\Resources\V1\AccountCollection;
 use App\Http\Resources\V1\AccountResource;
+use App\Http\Resources\V1\DoctorListResource;
 use App\Models\Account;
 use Illuminate\Http\Request;
 
@@ -37,6 +38,23 @@ class AccountController extends Controller
         }
         return new AccountCollection($accounts->paginate()->appends($request->query()));
     }
+
+    public function listDoctors(Request $request)
+    {
+        $this->authorize('viewAny', Account::class);
+
+        $limit = (int) $request->query('limit', 0);
+
+        $query = Account::where('role', 'doctor')->orderBy('name');
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+
+        $doctors = $query->get(['id', 'name']);
+
+        return DoctorListResource::collection($doctors);
+    }
+
 
     public function welcome(Request $request)
     {

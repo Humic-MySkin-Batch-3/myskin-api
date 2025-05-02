@@ -6,6 +6,7 @@ use App\Http\Resources\V1\SubmissionListResource;
 use App\Models\Submission;
 use App\Models\Account;
 use App\Http\Resources\V1\DashboardStatsResource;
+use Illuminate\Http\Request;
 
 class DoctorDashboardController extends Controller
 {
@@ -20,15 +21,22 @@ class DoctorDashboardController extends Controller
         ));
     }
 
-    public function pendingVerifications()
+    public function pendingVerifications(Request $request)
     {
-        $subs = Submission::pending()
-            ->with('patient:id,name')
-            ->orderBy('submitted_at','desc')
-            ->limit(10)
-            ->get();
+        $user  = $request->user();
+        $limit = (int) $request->query('limit', 0);
 
-        //$request->merge(['only_percentage' => true]);
+        $query = Submission::pending()
+            ->where('doctor_id', $user->id)
+            ->with('patient:id,name')
+            ->orderBy('submitted_at', 'desc');
+
+        if ($limit > 0) {
+            $subs = $query->limit($limit)->get();
+        } else {
+            $subs = $query->get();
+        }
+
         return SubmissionListResource::collection($subs);
     }
 }

@@ -22,6 +22,7 @@ class Submission extends Model
         'submitted_at',
         'verified_at',
         'percentage',
+        'is_submitted',
     ];
 
     protected $casts = [

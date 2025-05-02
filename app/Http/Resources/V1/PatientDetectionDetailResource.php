@@ -10,10 +10,11 @@ class PatientDetectionDetailResource extends JsonResource
     {
         return [
             'id'           => $this->id,
+            'doctorId'      => $this->doctor_id,
             'imageUrl'     => Storage::disk('public')->url($this->image_path),
             'diagnosis'    => $this->diagnosis ?? 'Belum dapat dipastikan',
             'diagnosisAi'  => $this->getDiagnosisAi(),
-            'isSubmitted'  => $this->status === 'verified' ? 'Sudah' : 'Tidak',
+            'isSubmitted'  => $this->is_submitted,
             'status'       => $this->status,
         ];
     }

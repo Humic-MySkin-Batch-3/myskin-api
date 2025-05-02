@@ -10,11 +10,12 @@ class PatientDetectionHistoryResource extends JsonResource
     {
 
         return [
+            'id' => $this->id,
             'submittedAt' => optional($this->submitted_at)->format('Y-m-d'),
             'diagnosisAi' => $this->getDiagnosisAi(),
             'imageUrl'    => Storage::disk('public')->url($this->image_path),
             'complaint'   => $this->complaint,
-            'isSubmitted' => $this->status === 'verified' ? 'Sudah' : 'Tidak',
+            'isSubmitted' => $this->is_submitted,
             'status'      => $this->status,
         ];
     }

@@ -30,7 +30,20 @@ class SubmissionPolicy
     }
     public function update($user, Submission $s)
     {
-        return $user->role==='doctor' || $user->role==='admin';
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        if ($user->role === 'doctor') {
+            return true;
+        }
+
+        if ($user->role === 'patient') {
+            return $s->patient_id === $user->id
+                && $s->status === 'pending';
+        }
+
+        return false;
     }
     public function delete($user, Submission $s)
     {

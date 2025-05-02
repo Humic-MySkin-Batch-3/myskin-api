@@ -11,13 +11,11 @@ use App\Http\Resources\V1\PatientDetectionHistoryResource;
 use App\Http\Resources\V1\PatientSubmissionDetailResource;
 use App\Http\Resources\V1\PatientSubmissionHistoryResource;
 use App\Http\Resources\V1\SubmissionCollection;
-use App\Http\Resources\V1\SubmissionListResource;
 use App\Http\Resources\V1\SubmissionResource;
 use App\Models\Submission;
 use App\Services\SkinAiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 
 class SubmissionController extends Controller
@@ -102,7 +100,6 @@ class SubmissionController extends Controller
 
     public function detectionDetail($id)
     {
-        // 'id' di sini adalah primary key (kolom 'id') pada tabel submissions
         $submission = Submission::findOrFail($id);
 
         $this->authorize('view', $submission);
@@ -174,8 +171,18 @@ class SubmissionController extends Controller
     {
         $data = $request->validated();
 
-        if (
-            array_key_exists('status', $data)
+        if ($request->has('doctorId')) {
+            $data['doctor_id'] = $request->input('doctorId');
+        }
+
+        // kalau pasien/sudah submit, set is_submitted
+        if (in_array($request->user()->role, ['patient','admin'])) {
+            $data['is_submitted'] = 'Sudah';
+        }
+
+        // untuk dokter/admin saat verifikasi
+        if (in_array($request->user()->role, ['doctor','admin'])
+            && isset($data['status'])
             && $data['status'] === 'verified'
             && ! $submission->verified_at
         ) {

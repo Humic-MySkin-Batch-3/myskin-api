@@ -36,21 +36,28 @@ class UpdateSubmissionRequest extends FormRequest
                 'status' => ['sometimes', 'required', Rule::in(['pending', 'verified', 'rejected'])],
                 'diagnosis' => ['sometimes', 'required'],
                 'doctorNote' => ['sometimes', 'required'],
+                'complaint' => ['sometimes', 'required'],
+
             ];
         }
     }
 
+    /**
     protected function prepareForValidation()
     {
-        $data = $this->all();
-        if (isset($data['doctorId'])) {
-            $data['doctor_id'] = $data['doctorId'];
-        }
-        if (isset($data['doctorNote'])) {
-            $data['doctor_note'] = $data['doctorNote'];
-        }
-        $this->replace($data);
-    }
+        $mapped = [];
 
+        if ($this->has('doctorId')) {
+            $mapped['doctor_id'] = $this->input('doctorId');
+        }
+        if ($this->has('doctorNote')) {
+            $mapped['doctor_note'] = $this->input('doctorNote');
+        }
+        if ($this->has('isSubmitted')) {
+            $mapped['is_submitted'] = $this->input('isSubmitted');
+        }
+
+        $this->merge($mapped);
+    } */
 
 }

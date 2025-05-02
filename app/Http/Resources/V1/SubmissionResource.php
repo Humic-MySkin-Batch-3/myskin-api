@@ -34,6 +34,7 @@ class SubmissionResource extends JsonResource
             'status' => $this->status,
             'diagnosis' => $this->diagnosis ?? 'Belum dapat dipastikan',
             'doctorNote' => $this->doctor_note,
+            'isSubmitted' => $this->is_submitted,
             'submittedAt'  => optional($this->submitted_at)->format('Y-m-d'),
             'verifiedAt'   => optional($this->verified_at)->format('Y-m-d'),
             'percentage'   => $this->percentage,
