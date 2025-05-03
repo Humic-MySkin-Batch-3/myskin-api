@@ -16,7 +16,7 @@ class DoctorProfile extends Model
         'license_number',
         'license_file_path',
         'diploma_file_path',
-        'certification',
+        'certification_file_path',
         'current_institution',
         'work_history',
         'publications',

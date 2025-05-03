@@ -16,6 +16,7 @@ class AuthController extends Controller
     // POST /api/v1/auth/register/doctor
     public function registerDoctor(RegisterDoctorRequest $request)
     {
+
         $acct = Account::create([
             'name'     => $request->name,
             'email'    => $request->email,
@@ -28,6 +29,8 @@ class AuthController extends Controller
             ->store('doctor_profiles/licenses','public');
         $diplomaPath = $request->file('diploma_file')
             ->store('doctor_profiles/diplomas','public');
+        $certPath = $request->file('certification_file')
+            ->store('doctor_profiles/certifications','public');
 
         $profile = DoctorProfile::create([
             'user_id'             => $acct->id,
@@ -35,7 +38,7 @@ class AuthController extends Controller
             'license_number'      => $request->license_number,
             'license_file_path'   => $licensePath,
             'diploma_file_path'   => $diplomaPath,
-            'certification'       => $request->certification,
+            'certification_file_path' => $certPath,
             'current_institution' => $request->current_institution,
             'work_history'        => $request->work_history,
             'publications'        => $request->publications,
@@ -57,7 +60,7 @@ class AuthController extends Controller
                     'licenseNumber'       => $profile->license_number,
                     'licenseFileUrl'      => asset("storage/{$profile->license_file_path}"),
                     'diplomaFileUrl'      => asset("storage/{$profile->diploma_file_path}"),
-                    'certification'       => $profile->certification,
+                    'certificationUrl' => asset("storage/{$profile->certification_file_path}"),
                     'currentInstitution'  => $profile->current_institution,
                     'workHistory'         => $profile->work_history,
                     'publications'        => $profile->publications,
