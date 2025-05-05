@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DoctorUpdateSubmissionRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class DoctorUpdateSubmissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'diagnosis'   => ['required','string'],
+            'diagnosis'   => ['required', Rule::in(['Melanoma', 'Bukan Melanoma'])],
             'doctorNote'  => ['required','string'],
         ];
     }

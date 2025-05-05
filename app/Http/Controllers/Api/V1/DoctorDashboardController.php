@@ -10,16 +10,27 @@ use Illuminate\Http\Request;
 
 class DoctorDashboardController extends Controller
 {
-    public function stats()
+    public function stats(Request $request)
     {
-        $totalPatients    = Account::where('role','patient')->count();
-        $pendingCount     = Submission::where('status','pending')->count();
-        $verifiedCount    = Submission::where('status','verified')->count();
+        $user = $request->user();
+
+        $totalPatients = Submission::where('doctor_id', $user->id)
+            ->distinct('patient_id')
+            ->count('patient_id');
+
+        $pendingCount = Submission::where('doctor_id', $user->id)
+            ->where('status', 'pending')
+            ->count();
+
+        $verifiedCount = Submission::where('doctor_id', $user->id)
+            ->where('status', 'verified')
+            ->count();
 
         return new DashboardStatsResource(compact(
-            'totalPatients','pendingCount','verifiedCount'
+            'totalPatients', 'pendingCount', 'verifiedCount'
         ));
     }
+
 
     public function pendingVerifications(Request $request)
     {

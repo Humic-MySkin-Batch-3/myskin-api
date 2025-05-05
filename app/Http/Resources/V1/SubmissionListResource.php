@@ -14,6 +14,7 @@ class SubmissionListResource extends JsonResource
         if ($onlyPercentage) {
             return [
                 'id'          => $this->id,
+                'patientId'    => $this->patient->id,
                 'patientName'  => $this->patient->name,
                 'submittedAt'  => optional($this->submitted_at)->format('Y-m-d'),
                 'imageUrl'      => Storage::disk('public')->url($this->image_path),

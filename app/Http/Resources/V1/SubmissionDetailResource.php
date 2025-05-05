@@ -13,6 +13,7 @@ class SubmissionDetailResource extends JsonResource
         return [
             'id'           => $this->id,
             'doctorId'      => $this->doctor_id,
+            'patientId'     => $this->patient->id,
             'patientName'  => $this->patient->name,
             'patientPhone' => $this->patient->phone,
             'patientEmail' => $this->patient->email,
