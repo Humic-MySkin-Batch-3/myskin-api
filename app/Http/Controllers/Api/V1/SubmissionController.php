@@ -200,8 +200,9 @@ class SubmissionController extends Controller
      */
     public function destroy(Submission $submission)
     {
-        //
+        $this->authorize('delete', $submission);
         $submission->delete();
-        return response()->json(['message' => 'Submission deleted successfully']);
+        return response()->json(['message' => 'Submission deleted successfully'], 200);
     }
+
 }

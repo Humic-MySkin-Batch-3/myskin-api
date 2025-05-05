@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
     Route::get('patient/detection/{id}',   [SubmissionController::class,'detectionDetail']);
     Route::get('patient/submission/{id}',  [SubmissionController::class,'submissionDetail']);
     Route::patch('patient/submission/{submission}',  [SubmissionController::class,'update']);
+    Route::delete('patient/submission/{submission}', [SubmissionController::class,'destroy']);
     Route::get('patient/doctors', [AccountController::class, 'listDoctors']);
 
     // resources

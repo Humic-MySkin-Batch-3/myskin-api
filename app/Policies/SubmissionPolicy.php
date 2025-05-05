@@ -45,10 +45,21 @@ class SubmissionPolicy
 
         return false;
     }
-    public function delete($user, Submission $s)
+    public function delete($user, Submission $submission)
     {
-        return $user->role==='doctor' || $user->role==='admin';
+        if ($user->role === 'admin') {
+            return true;
+        }
+        if ($user->role === 'doctor') {
+            return true;
+        }
+        if ($user->role === 'patient') {
+            return $submission->patient_id === $user->id
+                && $submission->status === 'pending';
+        }
+        return false;
     }
+
 
 
     /**
