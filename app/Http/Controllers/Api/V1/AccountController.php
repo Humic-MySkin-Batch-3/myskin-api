@@ -41,19 +41,24 @@ class AccountController extends Controller
 
     public function listDoctors(Request $request)
     {
-        $this->authorize('viewAny', Account::class);
+        $search = $request->query('search');
 
-        $limit = (int) $request->query('limit', 0);
+        $query = Account::where('role', 'doctor');
 
-        $query = Account::where('role', 'doctor')->orderBy('name');
-        if ($limit > 0) {
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($limit = (int) $request->query('limit', 0)) {
             $query->limit($limit);
         }
 
-        $doctors = $query->get(['id', 'name']);
+        $doctors = $query->orderBy('name')->get(['id', 'name']);
 
         return DoctorListResource::collection($doctors);
     }
+
+
 
 
     public function welcome(Request $request)

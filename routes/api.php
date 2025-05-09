@@ -6,9 +6,12 @@ use App\Http\Controllers\Api\V1\DoctorDashboardController;
 use App\Http\Controllers\Api\V1\DoctorPatientController;
 use App\Http\Controllers\Api\V1\DoctorProfileController;
 use App\Http\Controllers\Api\V1\DoctorSubmissionController;
+use App\Http\Controllers\Api\V1\PublicDetectionController;
 use App\Http\Controllers\Api\V1\SubmissionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::post('v1/detect', [PublicDetectionController::class, 'detect']);
 
 Route::prefix('v1/auth')->group(function(){
     //Route::post('register', [AuthController::class,'register']);

@@ -10,7 +10,6 @@ class AccountPolicy
 {
     public function viewAny($user)
     {
-        // hanya admin boleh lihat daftar akun
         return in_array($user->role, ['admin', 'patient']);
     }
     public function view($user, Account $account)
