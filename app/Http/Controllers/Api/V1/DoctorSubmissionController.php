@@ -43,12 +43,18 @@ class DoctorSubmissionController extends Controller
 
         $subs = Submission::pending()
             ->where('doctor_id', $user->id)
+            ->whereHas('patient', function ($q) use ($request) {
+                if ($search = $request->query('search')) {
+                    $q->where('name', 'like', "%{$search}%");
+                }
+            })
             ->with('patient:id,name')
             ->orderBy('submitted_at','desc')
             ->get();
 
         return SubmissionListResource::collection($subs);
     }
+
 
 
     public function history(Request $request)
@@ -59,8 +65,13 @@ class DoctorSubmissionController extends Controller
         $limit    = (int) $request->query('limit', 0);
 
         $query = Submission::where('status', 'verified')
-        ->where('doctor_id', $doctorId)
-        ->with('patient:id,name')
+            ->where('doctor_id', $doctorId)
+            ->whereHas('patient', function ($q) use ($request) {
+                if ($search = $request->query('search')) {
+                    $q->where('name', 'like', "%{$search}%");
+                }
+            })
+            ->with('patient:id,name')
             ->orderBy('verified_at', 'desc');
 
         if ($limit > 0) {
@@ -71,6 +82,7 @@ class DoctorSubmissionController extends Controller
 
         return DoctorHistorySubmissionResource::collection($subs);
     }
+
 
 
     public function detail($id)
