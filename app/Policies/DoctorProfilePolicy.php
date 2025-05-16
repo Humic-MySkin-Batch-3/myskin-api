@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\Account;
 use App\Models\DoctorProfile;
-use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class DoctorProfilePolicy
@@ -36,7 +36,7 @@ class DoctorProfilePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, DoctorProfile $doctorProfile): bool
+    public function restore(Account $user, DoctorProfile $doctorProfile): bool
     {
         return false;
     }
@@ -44,7 +44,7 @@ class DoctorProfilePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, DoctorProfile $doctorProfile): bool
+    public function forceDelete(Account $user, DoctorProfile $doctorProfile): bool
     {
         return false;
     }

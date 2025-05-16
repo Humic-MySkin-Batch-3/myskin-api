@@ -83,8 +83,6 @@ class DoctorSubmissionController extends Controller
         return DoctorHistorySubmissionResource::collection($subs);
     }
 
-
-
     public function detail($id)
     {
         $sub = Submission::with('patient')

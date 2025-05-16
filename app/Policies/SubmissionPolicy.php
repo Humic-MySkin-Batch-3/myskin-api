@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Submission;
-use App\Models\User;
+use App\Models\Account;
 use Illuminate\Auth\Access\Response;
 
 class SubmissionPolicy
@@ -65,7 +65,7 @@ class SubmissionPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Submission $submission): bool
+    public function restore(Account $user, Submission $submission): bool
     {
         return false;
     }
@@ -73,7 +73,7 @@ class SubmissionPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Submission $submission): bool
+    public function forceDelete(Account $user, Submission $submission): bool
     {
         return false;
     }
