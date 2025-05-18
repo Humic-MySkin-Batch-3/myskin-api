@@ -20,7 +20,7 @@ class RegisterDoctorRequest extends FormRequest
             'license_number'     => ['required','string','unique:doctor_profiles,license_number'],
             'license_file'       => ['required','file','mimes:pdf,jpg,png','max:4096'],
             'diploma_file'       => ['required','file','mimes:pdf,jpg,png','max:4096'],
-            'certification_file' => ['required','file','mimes:pdf,jpg,png','max:5120'],
+            'certification_file' => ['sometimes','file','mimes:pdf,jpg,png','max:5120'],
             'current_institution'=> ['required','string'],
             'work_history'       => ['required','string'],
             'publications'       => ['sometimes','string'],
